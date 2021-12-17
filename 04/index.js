@@ -110,14 +110,37 @@ const step01 = () => {
 };
 
 const step02 = () => {
-  const data = utils.openFile(utils.type.FILE_SAMPLE);
+  const data = utils.openFile(utils.type.FILE_INPUT);
 
   const input = utils.splitByEOL(data);
 
-  let result = '';
+  const numbers = getBingoNumbers(input);
+
+  let boards = getBoards(input);
+  let lastWinningBoard = null;
+
+  let lastWinningNumber = 0;
+
+  while (boards.length) {
+    lastWinningNumber = numbers.shift();
+    boards = markBoards(boards, lastWinningNumber);
+
+    for (const [index, b] of boards.entries()) {
+      const hasWin = checkForWin(b);
+
+      if (hasWin) {
+        lastWinningBoard = b;
+        boards.splice(index, 1);
+      }
+    }
+  }
+
+  const sum = sumUnmarked(lastWinningBoard);
+
+  const result = sum * lastWinningNumber;
 
   console.log(`result => ${result}`);
 };
 
-step01();
-//step02();
+//step01();
+step02();
