@@ -43,15 +43,66 @@ const step01 = () => {
   console.log(`result => ${result}`);
 };
 
+const commonBitAtPosition = (data, pos, most = true) => {
+  let sumZeros = data.reduce(
+    (prev, curr) => prev + (curr[pos] === '0' ? +1 : 0),
+    0
+  );
+
+  let sumOnes = data.reduce(
+    (prev, curr) => prev + (curr[pos] === '1' ? +1 : 0),
+    0
+  );
+
+  if (sumZeros == sumOnes) {
+    return most ? '1' : '0';
+  }
+
+  sum = sumOnes - sumZeros;
+
+  if (most) {
+    return sum > 0 ? '1' : '0';
+  }
+  return sum > 0 ? '0' : '1';
+};
+
+/**
+ *
+ * @param array data
+ * @param int pos
+ * @param string bit
+ * @returns
+ */
+const filterByBitAtPosition = (data, pos, bit) => {
+  return data.filter((i) => i[pos] === bit);
+};
+
+const reduce = (data, most = true) => {
+  let filterd = data;
+  let pos = 0;
+
+  while (filterd.length > 1) {
+    let common = commonBitAtPosition(filterd, pos, most);
+    filterd = filterByBitAtPosition(filterd, pos, common);
+    //console.log({ common, filterd, pos });
+    pos++;
+  }
+
+  return filterd;
+};
+
 const step02 = () => {
-  const data = utils.openFile(utils.type.FILE_SAMPLE);
+  const data = utils.openFile(utils.type.FILE_INPUT);
 
   const input = utils.splitByEOL(data);
 
-  let result = '';
+  const oxygenGeneratorRating = parseInt(reduce(input, true), 2);
+  const co2ScrubberRating = parseInt(reduce(input, false), 2);
+
+  let result = oxygenGeneratorRating * co2ScrubberRating;
 
   console.log(`result => ${result}`);
 };
 
-step01();
-//step02();
+// step01();
+step02();
